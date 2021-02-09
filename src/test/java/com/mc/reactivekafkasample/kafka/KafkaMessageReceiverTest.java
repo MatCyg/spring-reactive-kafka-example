@@ -37,14 +37,14 @@ public class KafkaMessageReceiverTest {
     @Test
     public void testKafkaReceiver() {
         // given
-        var expectedFoo = Message.builder().id(UUID.randomUUID().toString()).msg("Hello kafka").build();
+        var expectedMessage = Message.builder().id(UUID.randomUUID().toString()).msg("Hello kafka").build();
 
         // except
         StepVerifier
                 .create(reactiveKafkaConsumer.provide())
-                .thenAwait(Duration.ofSeconds(1))
-                .then(() -> sendMessage(expectedFoo))
-                .expectNextMatches(record -> record.value().equals(expectedFoo))
+                .thenAwait(Duration.ofSeconds(5))
+                .then(() -> sendMessage(expectedMessage))
+                .expectNextMatches(record -> record.value().equals(expectedMessage))
                 .thenCancel()
                 .verify(TEST_TIMEOUT);
     }
@@ -52,8 +52,7 @@ public class KafkaMessageReceiverTest {
     @SneakyThrows
     private void sendMessage(Object value) {
         var json = KafkaJsonDeserializer.OBJECT_MAPPER.writeValueAsString(value);
-        getKafkaTemplate().send("fooTopic", UUID.randomUUID().toString(), json);
-
+        getKafkaTemplate().send("messageTopic", UUID.randomUUID().toString(), json);
     }
 
     private KafkaTemplate<String, String> getKafkaTemplate() {

@@ -22,9 +22,9 @@ public class KafkaConfiguration {
 
     private final KafkaProperties kafkaProperties;
 
-    @Bean("kafkaFooTopicConsumer")
+    @Bean("messageTopicConsumer")
     public ReactiveKafkaConsumer<Message> kafkaFooTopicConsumer() {
-        var topicName = "fooTopic";
+        var topicName = "messageTopic";
         return new ReactiveKafkaConsumer<>(createKafkaReceiver(MessageDeserializer.class, topicName));
     }
 
